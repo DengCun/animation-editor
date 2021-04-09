@@ -1,7 +1,7 @@
 # animation-editor
 
 > 一个动画编辑器
-![image](https://github.com/DengCun/animation-editor/tree/master/src/assets/屏幕截图.png)
+![image](https://github.com/DengCun/animation-editor/tree/master/src/assets/screenshot.png)
 ## Build Setup
 
 ``` bash
