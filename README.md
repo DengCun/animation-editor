@@ -1,7 +1,8 @@
 # animation-editor
 
 > 一个动画编辑器
-![image](https://github.com/DengCun/animation-editor/tree/master/src/assets/screenshot.png)
+# 屏幕截图
+![image](http://m.qpic.cn/psc?/V51okGTr2nnUMn3m3WER2P5WOc0KUGl2/TmEUgtj9EK6.7V8ajmQrEGS2Gp24sSn*46jUC6Tw1pA*tpu2aKo7nqW5N7J5T7.g0baxeIkNpFHQTl*XuLLO8EINCjqYSmKXfiTqjQmFa3w!/b&bo=gAcNBAAAAAADF7w!&rf=viewer_4)
 ## Build Setup
 
 ``` bash
