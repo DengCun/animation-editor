@@ -2,16 +2,22 @@
   <div>
     <span>总时间：<el-input-number v-model="allTime" @change="handleAllTimeChange" :min="10" :max="Number.MAX_VALUE" label="总时间" ref="allTimeInput"></el-input-number>s</span>
     <el-button @click="playOrPause">{{canPlay?'播放':'暂停'}}</el-button>
-    <el-checkbox v-model="repeat" @change="setRepeat">循环</el-checkbox>
+    <el-checkbox v-model="repeat" @change="setRepeat">循环</el-checkbox><br>
+    <span>当前选中的轨道：<span>{{this.curTrack?this.curTrack.name:''}}</span></span><br>
+    <span>当前选中的单元动画：<span>{{this.curAnimation?this.curAnimation.name:''}}</span></span><br>
+    <span>总轨道数：<span>{{this.trackCount}}</span></span><br>
+    <span>游标时间：<span>{{this.time}}s</span></span><br>
+    <h1>右键开始操作！</h1>
     <editor-panel ref="editPanel" v-on:nameRightDown="nameRightDown"
                 v-on:animationRightDown="animationRightDown"
                 v-on:blankTrackRightDown="blankTrackRightDown"
                 v-on:blankPanelRightDown="blankPanelRightDown"
-                style="top: 100px;width: 100%;left: 0px;height: 500px;"
+                style="top: 200px;width: 100%;left: 0px;height: 500px;"
                 v-on:pause="onPause"
                 v-on:timeChange="timeChange"
                 v-on:animationChange="animationChange"
                 v-on:selectedTrackChange="selectedTrackChange"
+                  v-on:selectedAnimationChange="selectedAnimationChange"
     >
       <template v-slot:name="{track}">  <!-- 自定义左侧栏 -->
         <span class="el-panel-row-name">
@@ -35,11 +41,14 @@
 
 <script>
 import EditorPanel from './EditorPanel'
+import {generateId} from '../js/Util'
 export default {
   name: 'HelloWorld',
   components: {EditorPanel},
   data () {
     return {
+      time: 0,
+      trackCount: 0,
       repeat: true,
       canPlay: true,
       allTime: 20,
@@ -56,8 +65,28 @@ export default {
   },
   mounted () {
     document.addEventListener('mousedown', this.hideMenu, false)
-  },
-  watch: {
+    this.time = this.$refs.editPanel.cursorTime
+    // let dataset = [{id: generateId(),
+    //   name: '中国',
+    //   selected: false,
+    // 这里是初始的展示数据需要 left  width iconShow 正确，为了展示
+    // 如果调用insertAnimation() 这些不需要管会自动计算
+    //   animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false},
+    //     {id: generateId(), name: '旋转', type: 'rotate', startTime: 2, endTime: 4, left: 200, width: 198, iconShow: false},
+    //     {id: generateId(), name: '缩放', type: 'zoom', startTime: 4, endTime: 6, left: 400, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '2', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '3', selected: false, animation: [{id: generateId(), name: 'a', type: 'j', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '4', selected: false, animation: [{id: generateId(), name: 'b', type: 'k', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '5', selected: false, animation: [{id: generateId(), name: 'x', type: 'l', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '6', selected: false, animation: [{id: generateId(), name: 'd', type: 'r', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '7', selected: false, animation: [{id: generateId(), name: 'e', type: 'm', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '8', selected: false, animation: [{id: generateId(), name: 'f', type: 'n', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '9', selected: false, animation: [{id: generateId(), name: 'g', type: 'q', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '10', selected: false, animation: [{id: generateId(), name: 'h', type: 'o', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
+    // {id: generateId(), name: '11', selected: false, animation: [{id: generateId(), name: 'i', type: 'p', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]}
+    // ]
+    // this.$refs.editPanel.setAnimations(dataset)
+    // this.trackCount = this.$refs.editPanel.getAnimations().length
   },
   methods: {
     /**
@@ -66,6 +95,7 @@ export default {
      */
     timeChange (time) {
       console.log('timeChange: %o', time)
+      this.time = time
     },
     /**
      * 单元动画（蓝色div）变化
@@ -74,6 +104,15 @@ export default {
      */
     animationChange (animation, track) {
       console.log('animationChange: animation:%o track:%o', animation, track)
+      this.curAnimation = animation
+    },
+    /**
+     * 当前选中的动画变化（单选，不支持多选）
+     * @param animation
+     */
+    selectedAnimationChange (animation, track) {
+      console.log('selectedAnimationChange: animation:%o track:%o', animation, track)
+      this.curAnimation = animation
     },
     /**
      * 当前选中的轨道变化（单选，不支持多选）
@@ -81,6 +120,7 @@ export default {
      */
     selectedTrackChange (track) {
       console.log('selectedTrackChange: %o', track)
+      this.curTrack = track
     },
     /**
      * 设置是否循环播放
@@ -128,15 +168,15 @@ export default {
       }
     },
     insertAnimation () {
-      console.log('insertAnimation')
       this.menuVisible = false
       let editPanel = this.$refs.editPanel
       if (this.curTrack) {
-        editPanel.insertAnimation(this.mouseX, this.mouseY, {name: 'nnnnn', type: 'dsdasd'})
+        let a = editPanel.insertAnimation(this.mouseX, this.mouseY, {name: '新动画' + parseInt(100 * Math.random()), type: 'type'})
+        console.log('插入动画 insertAnimation %o', a)
       }
     },
     deleteAnimation () {
-      console.log('deleteAnimation')
+      console.log('删除动画 deleteAnimation')
       this.menuVisible = false
       let editPanel = this.$refs.editPanel
       if (this.curAnimation) {
@@ -147,8 +187,9 @@ export default {
     addTrack () {
       this.menuVisible = false
       let editPanel = this.$refs.editPanel
-      let track = editPanel.addTrack({name: 'new'})
-      console.log('addTrack: %', track)
+      let track = editPanel.addTrack({name: '新轨道' + parseInt(100 * Math.random())})
+      this.trackCount = this.$refs.editPanel.getAnimations().length
+      console.log('添加轨道 addTrack: %', track)
     },
     deleteTrack () {
       console.log('deleteTrack')
@@ -158,6 +199,7 @@ export default {
         editPanel.deleteTrack(this.curTrack.id)
         this.curTrack = null
       }
+      this.trackCount = this.$refs.editPanel.getAnimations().length
     },
     hideMenu (e) {
       if (e.button === 0) {
@@ -179,7 +221,7 @@ export default {
       this.menuVisible = true
     },
     nameRightDown (track, event) {
-      console.log('nameRightDown： %o %o', track, event)
+      console.log('右键轨道名称区域  nameRightDown： %o %o', track, event)
       this.showMenu(event)
       for (let item of this.menu) {
         if (item.func === 'insertAnimation' || item.func === 'deleteAnimation') {
@@ -194,7 +236,7 @@ export default {
       this.mouseY = event.clientY
     },
     animationRightDown (animation, track, event) {
-      console.log('animationRightDown： %o %o %o', animation, track, event)
+      console.log('右键一个单元动画 animationRightDown： %o %o %o', animation, track, event)
       this.showMenu(event)
       for (let item of this.menu) {
         if (item.func === 'deleteAnimation') {
@@ -209,7 +251,7 @@ export default {
       this.mouseY = event.clientY
     },
     blankTrackRightDown (track, event) {
-      console.log('blankTrackRightDown： %o %o', track, event)
+      console.log('右键一个轨道（轨道空白区域）  blankTrackRightDown： %o %o', track, event)
       this.showMenu(event)
       for (let item of this.menu) {
         if (item.func === 'deleteAnimation') {
@@ -224,7 +266,7 @@ export default {
       this.mouseY = event.clientY
     },
     blankPanelRightDown (event) {
-      console.log('blankTrackRightDown')
+      console.log('右键空白面板  blankPanelRightDown')
       this.showMenu(event)
       for (let item of this.menu) {
         if (item.func === 'addTrack') {

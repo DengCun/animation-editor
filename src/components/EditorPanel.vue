@@ -128,24 +128,7 @@ export default {
       nextAnimation: null,
       curElement: null, // 记录当前操作的动画DIV
       // 所有计算考虑1px的border getBoundingClientRect 计算包含border
-      dataset: [{id: generateId(),
-        name: '中国',
-        selected: false,
-        // width +2 (边框)才算元素完全的宽 计算时间是用完全的宽计算
-        animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false},
-          {id: generateId(), name: '旋转', type: 'translation', startTime: 2, endTime: 4, left: 200, width: 198, iconShow: false},
-          {id: generateId(), name: '缩放', type: 'translation', startTime: 4, endTime: 6, left: 400, width: 198, iconShow: false}]},
-      {id: generateId(), name: '2sssssssssssssssssssssssssssssssssssssssss', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '3', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '4', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '5', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '6', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '7', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '8', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '9', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '10', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]},
-      {id: generateId(), name: '11', selected: false, animation: [{id: generateId(), name: '平移', type: 'translation', startTime: 0, endTime: 2, left: 0, width: 198, iconShow: false}]}
-      ]
+      dataset: []
       // dataset: []
     }
   },
@@ -166,10 +149,16 @@ export default {
 
   },
   watch: {
+    /**
+     * 当前游标时间发生变化，发送timeChange消息
+     */
     cursorTime (newTime, old) {
       this.$emit('timeChange', this.cursorTime)
       // console.log('timeChange: %o', this.cursorTime)
     },
+    /**
+     * 水平滚动条（轨道下面那个）百分比变化时，计算相关div位置
+     */
     horPercent (percent, old) {
       if (this.horScrVisible) {
         let tracksParent = this.$refs.tracksParent
@@ -186,6 +175,9 @@ export default {
         this.computerRuler()
       }
     },
+    /**
+     * 垂直滚动条百分比变化时，计算相关div位置
+     */
     verPercent (percent) {
       if (this.verScrVisible) {
         let namesParent = this.$refs.namesParent
@@ -194,6 +186,9 @@ export default {
         tracksParent.scrollTop = Math.ceil((tracksParent.scrollHeight - tracksParent.getBoundingClientRect().height) * this.verPercent)
       }
     },
+    /**
+     * 水平滚动条（左侧栏下面那个）百分比变化时，计算相关div位置
+     */
     namesPercent (percent) {
       if (this.namesScrVisible) {
         let namesParent = this.$refs.namesParent
@@ -202,6 +197,10 @@ export default {
     }
   },
   methods: {
+    // 设置动画数据
+    setAnimations (dataset) {
+      this.dataset = dataset
+    },
     /**
      * 重新绘制时间轴，时间轴并不会移动，移动的是轨道
      */
@@ -235,11 +234,13 @@ export default {
         }
       }
     },
+    // 发送单元动画变化消息
     notifyAnimationChange () {
       if (this.curAnimation === null) return
       this.$emit('animationChange', this.curAnimation, this.getTrackByAnimationId(this.curAnimation.id))
       // console.log('animationChange: %o %o', this.curAnimation, this.getTrackByAnimationId(this.curAnimation.id))
     },
+    // 点击时间轴，改变游标位置，计算游标时间
     onTimelineDown (e) {
       let tracksParent = this.$refs.tracksParent
       let timelineParent = this.$refs.timelineParent
@@ -248,6 +249,7 @@ export default {
       this.cursorTime = parseFloat((length / this.delta * this.timeOfPerDelta).toFixed(1))
       this.setCursorPosByTime()
     },
+    // 点击时间轴上的时间标签，改变游标位置，计算游标时间
     onLabelDown (e) {
       this.cursorTime = parseFloat(e.toElement.innerHTML.split('s')[0])
       this.setCursorPosByTime()
@@ -385,6 +387,7 @@ export default {
         })
       })
     },
+    // 计算时间标签的元素宽度，注意如果你要修改文字大小这里请也修改，不然和刻度对不齐
     computerLabelWidth (text) {
       let x = text.length - 1
       return x * 7.52 + 5.94
@@ -480,9 +483,14 @@ export default {
       let hw = 0
       if (tracksParent.getBoundingClientRect().width < tracksParent.scrollWidth) {
         this.horScrVisible = true
-        hw = Math.max(this.minScrollLength, parseInt(tracksParent.getBoundingClientRect().width / tracksParent.scrollWidth * horizontalScrollParent.getBoundingClientRect().width))
         this.$nextTick(() => {
+          hw = Math.max(this.minScrollLength, parseInt(tracksParent.getBoundingClientRect().width / tracksParent.scrollWidth * horizontalScrollParent.getBoundingClientRect().width))
           horizontalScroll.style.width = hw + 'px'
+          // 根据百分比计算水平滚动条位置
+          let width = tracksParent.getBoundingClientRect().width
+          let scrollLeft = Math.ceil((tracksParent.scrollWidth - width) * this.horPercent)
+          tracksParent.scrollLeft = scrollLeft
+          horizontalScroll.style.left = Math.ceil((horizontalScrollParent.getBoundingClientRect().width - hw) * this.horPercent) + 'px'
         })
       } else {
         this.horScrVisible = false
@@ -499,12 +507,6 @@ export default {
         })
       } else {
         this.namesScrVisible = false
-      }
-      if (this.horScrVisible) { // 根据百分比计算水平滚动条位置
-        let width = tracksParent.getBoundingClientRect().width
-        let scrollLeft = Math.ceil((tracksParent.scrollWidth - width) * this.horPercent)
-        tracksParent.scrollLeft = scrollLeft
-        horizontalScroll.style.left = Math.ceil((horizontalScrollParent.getBoundingClientRect().width - hw) * this.horPercent) + 'px'
       }
     },
     /**
@@ -617,6 +619,7 @@ export default {
       if (this.playId !== null) return
       this.cursorDown = true
     },
+    // 游标一直向左移动
     leftMoveCursor () {
       if (!this.cursorDown || !this.startMove) {
         if (this.moveId !== null) {
@@ -637,6 +640,7 @@ export default {
       this.computerTimeByPos()
       this.horPercent = tracksParent.scrollLeft / (tracksParent.scrollWidth - tracksParent.getBoundingClientRect().width)
     },
+    // 游标一直向右移动
     rightMoveCursor () {
       if (!this.cursorDown || !this.startMove) {
         if (this.moveId !== null) {
@@ -661,6 +665,7 @@ export default {
       this.computerTimeByPos()
       this.horPercent = tracksParent.scrollLeft / (tracksParent.scrollWidth - tracksParent.getBoundingClientRect().width)
     },
+    // 游标移动事件
     onCursorMove (e) {
       if (this.cursorDown && !this.startMove) {
         let cursor = this.$refs.cursor
@@ -904,7 +909,7 @@ export default {
       return true
     },
     /**
-     *
+     *根据轨道id删除轨道
      *@param trackId 轨道id
      */
     deleteTrack (trackId) {
@@ -920,6 +925,7 @@ export default {
       })
       return true
     },
+    // 添加轨道
     addTrack (options) {
       let track = {id: generateId(), name: options.name, animation: [], selected: false}
       this.dataset.push(track)
@@ -928,6 +934,7 @@ export default {
       })
       return track
     },
+    // 单元动画左侧小图标事件
     leftIconMouseDown (e) {
       if (this.playId !== null) return
       this.curAnimation = this.getAnimationByEvent(e)
@@ -983,6 +990,7 @@ export default {
       document.removeEventListener('mousemove', this.leftIconMouseMove, false)
       document.removeEventListener('mouseup', this.leftIconMouseUp, false)
     },
+    // 单元动画右侧图标事件
     rightIconMouseDown (e) {
       if (this.playId !== null) return
       this.curAnimation = this.getAnimationByEvent(e)
@@ -1036,6 +1044,7 @@ export default {
       document.removeEventListener('mousemove', this.rightIconMouseMove, false)
       document.removeEventListener('mouseup', this.rightIconMouseUp, false)
     },
+    // 单元动画事件
     animationMouseDown (e) {
       if (this.playId !== null) return
       this.curAnimation = this.getAnimationByEvent(e)
@@ -1048,6 +1057,7 @@ export default {
       this.nextAnimation = this.getNextAnimationById(this.curAnimation.id)
       document.addEventListener('mousemove', this.animationMouseMove, false)
       document.addEventListener('mouseup', this.animationMouseUp, false)
+      this.$emit('selectedAnimationChange', this.curAnimation, this.getTrackByAnimationId(this.curAnimation.id))
     },
     animationMouseMove (e) {
       if (this.animationDown && this.curAnimation !== null && e.movementX !== 0) {
