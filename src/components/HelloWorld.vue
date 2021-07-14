@@ -41,7 +41,6 @@
 
 <script>
 import EditorPanel from './EditorPanel'
-import {generateId} from '../js/Util'
 export default {
   name: 'HelloWorld',
   components: {EditorPanel},

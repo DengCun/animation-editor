@@ -1,62 +1,62 @@
 <template>
   <div class="el-panel" ref="panel">
     <div class="el-panel-left" ref="left">
-        <div class="el-panel-content-header">
-        </div>
-        <div class="el-panel-content-center el-panel-content-names" ref="namesParent">
-          <ul class="el-panel-names" ref="names">
-            <li v-for="(item,index) in dataset"
-                v-bind:key="item.id + item.name" v-bind:id="item.id +'_'+ item.name"  v-bind:data-id="item.id"
-                :style="{position:'absolute',top:index*(liHeight+5)+'px',left:'0',height:liHeight+'px'}"
-                v-bind:class="{'el-panel-li':true,'el-panel-li-current':item.selected}"
-                v-on:mousedown="onTrackSelect">
-              <slot name="name" v-bind:track="item"><span class="el-panel-row-name">{{item.name}}</span></slot>
-            </li>
-          </ul>
-        </div>
-        <div class="el-panel-content-footer">
-          <div class="el-panel-scroll-horizontal" ref="namesScrollParent" v-show="namesScrVisible">
-            <div class="el-panel-scroll-horizontal-thumb" ref="namesScroll" style="position: absolute;left: 0;top: 0;width:50px;height: 10px; ">
+      <div class="el-panel-content-header">
+      </div>
+      <div class="el-panel-content-center el-panel-content-names" ref="namesParent">
+        <ul class="el-panel-names" ref="names">
+          <li v-for="(item,index) in showDataset"
+              v-bind:key="item.id + item.name" v-bind:id="item.id +'_'+ item.name"  v-bind:data-id="item.id"
+              :style="{position:'absolute',top:index*(liHeight+5)+'px',left:'0',height:liHeight+'px'}"
+              v-bind:class="{'el-panel-li':true,'el-panel-li-current':item.selected}"
+              v-on:mousedown="onTrackSelect">
+            <slot name="name" v-bind:track="item"><span class="el-panel-row-name">{{item.name}}</span></slot>
+          </li>
+        </ul>
+      </div>
+      <div class="el-panel-content-footer">
+        <div class="el-panel-scroll-horizontal" ref="namesScrollParent" v-show="namesScrVisible">
+          <div class="el-panel-scroll-horizontal-thumb" ref="namesScroll" style="position: absolute;left: 0;top: 0;width:50px;height: 10px; ">
 
-            </div>
           </div>
         </div>
       </div>
+    </div>
     <div class="el-panel-center" ref="center">
-        <div class="el-panel-content-header el-panel-content-header-timeline" ref="timelineParent">
-          <div class="timeline-bar" ref='timeline'>
-          </div>
+      <div class="el-panel-content-header el-panel-content-header-timeline" ref="timelineParent">
+        <div class="timeline-bar" ref='timeline'>
         </div>
-        <div class='el-panel-content-center el-panel-content-tracks' ref="tracksParent">
-          <ul class='el-panel-tracks' ref="tracks">
-            <li v-for="(item,index) in dataset"
-                v-bind:key="item.id" v-bind:id="item.id" v-bind:data-id="item.id"
-                :style="{position:'absolute',top:index*(liHeight+5)+'px',left:'0',height:liHeight+'px'}"
-                v-bind:class="{'el-panel-li':true,'el-panel-li-current':item.selected}"
-                v-on:mousedown="onTrackSelect">
-                <div class="el-panel-animation" v-for="(animation) in item.animation" v-on:mouseover="animation.iconShow = true"
-                     v-on:mouseout="animation.iconShow = false" v-bind:data-id="animation.id" v-bind:id="animation.id"
-                     v-on:mousedown="animationMouseDown"
-                     v-bind:key="animation.id + animation.name"
-                     :style="{position: 'absolute',top:'2px', left: animation.left+'px',width: animation.width+'px',height:liHeight-2+'px'}">
-                  <i class="el-icon-circle-plus el-panel-icon-left" v-on:mousedown="leftIconMouseDown" v-show="animation.iconShow" v-bind:data-id="animation.id"></i>
-                  <span>{{animation.name}}</span>
-                  <i class="el-icon-circle-plus el-panel-icon-right" v-show="animation.iconShow" v-on:mousedown="rightIconMouseDown" v-bind:data-id="animation.id"></i>
-                </div>
-            </li>
-          </ul>
-        </div>
-        <div class="el-panel-content-footer">
-          <div class="el-panel-scroll-horizontal" ref="horizontalScrollParent" v-show="horScrVisible">
-            <div class="el-panel-scroll-horizontal-thumb" ref="horizontalScroll" style="position: absolute;left: 0;top: 0;width:50px;height: 10px; ">
-
+      </div>
+      <div class='el-panel-content-center el-panel-content-tracks' ref="tracksParent">
+        <ul class='el-panel-tracks' ref="tracks">
+          <li v-for="(item,index) in showDataset"
+              v-bind:key="item.id" v-bind:id="item.id" v-bind:data-id="item.id"
+              :style="{position:'absolute',top:index*(liHeight+5)+'px',left:'0',height:liHeight+'px'}"
+              v-bind:class="{'el-panel-li':true,'el-panel-li-current':item.selected}"
+              v-on:mousedown="onTrackSelect">
+            <div class="el-panel-animation" v-for="(animation) in item.animation" v-on:mouseover="animation.iconShow = true"
+                 v-on:mouseout="animation.iconShow = false" v-bind:data-id="animation.id" v-bind:id="animation.id"
+                 v-on:mousedown="animationMouseDown"
+                 v-bind:key="animation.id + animation.name"
+                 :style="{position: 'absolute',top:'2px', left: animation.left+'px',width: animation.width+'px',height:liHeight-2+'px'}">
+              <i class="el-icon-circle-plus el-panel-icon-left" v-on:mousedown="leftIconMouseDown" v-show="animation.iconShow" v-bind:data-id="animation.id"></i>
+              <span>{{animation.name}}</span>
+              <i class="el-icon-circle-plus el-panel-icon-right" v-show="animation.iconShow" v-on:mousedown="rightIconMouseDown" v-bind:data-id="animation.id"></i>
             </div>
+          </li>
+        </ul>
+      </div>
+      <div class="el-panel-content-footer">
+        <div class="el-panel-scroll-horizontal" ref="horizontalScrollParent" v-show="horScrVisible">
+          <div class="el-panel-scroll-horizontal-thumb" ref="horizontalScroll" style="position: absolute;left: 0;top: 0;width:50px;height: 10px; ">
+
           </div>
         </div>
-       <div class="el-panel-cursor" style="position: absolute;left: -10px;top: 15px;" ref="cursor">
-         <canvas class="el-panel-cursor-canvas" style="width: 20px;height: 20px;" ref="cursorCanvas"></canvas>
-         <div class="el-panel-cursor-line" style="position: absolute;left: 9px;top: 20px;width: 2px;height: 460px;" ref="cursorLine"></div>
-       </div>
+      </div>
+      <div class="el-panel-cursor" style="position: absolute;left: -10px;top: 15px;" ref="cursor">
+        <canvas class="el-panel-cursor-canvas" style="width: 20px;height: 20px;" ref="cursorCanvas"></canvas>
+        <div class="el-panel-cursor-line" style="position: absolute;left: 9px;top: 20px;width: 2px;height: 460px;" ref="cursorLine"></div>
+      </div>
       <div class="el-panel-cursor" style="position: absolute;left: 110px;top: 15px;" ref="leftIconCursor" v-show="LRTimeAxisVisible">
         <span style="position: absolute;left: -20px;" ref="leftTimeSpan">{{leftTime}}</span>
         <canvas class="el-panel-cursor-canvas" style="width: 10px;height: 10px;" ref="leftIconCursorCanvas"></canvas>
@@ -67,21 +67,21 @@
         <canvas class="el-panel-cursor-canvas" style="width: 10px;height: 10px;" ref="rightIconCursorCanvas"></canvas>
         <div class="el-panel-cursor-line" style="position: absolute;left: 4px;top: 16px;width: 1px;height: 460px;" ref="rightIconCursorLine"></div>
       </div>
-      </div>
+    </div>
     <div class="el-panel-right" ref="right">
-        <div class="el-panel-content-header">
-        </div>
-        <div class="el-panel-content-center">
-          <div class="el-panel-scroll-vertical" ref="verticalScrollParent" v-show="verScrVisible">
-            <div class="el-panel-scroll-vertical-thumb" ref="verticalScroll" style="position: absolute;left: 0;top: 0;width:100%;height: 50px; ">
+      <div class="el-panel-content-header">
+      </div>
+      <div class="el-panel-content-center">
+        <div class="el-panel-scroll-vertical" ref="verticalScrollParent" v-show="verScrVisible">
+          <div class="el-panel-scroll-vertical-thumb" ref="verticalScroll" style="position: absolute;left: 0;top: 0;width:100%;height: 50px; ">
 
-            </div>
           </div>
         </div>
-        <div class="el-panel-content-footer">
-
-        </div>
       </div>
+      <div class="el-panel-content-footer">
+
+      </div>
+    </div>
   </div>
 </template>
 
@@ -91,7 +91,7 @@ import {generateId, StoreMap} from '../js/Util'
 export default {
   data () {
     return {
-      liHeight: 50,
+      liHeight: 0, // 此值是根据showCount计算，外部设置无效
       LRTimeAxisVisible: false,
       leftTime: '0s',
       rightTime: '10s',
@@ -108,7 +108,7 @@ export default {
       selectedTrack: null,
       minScrollLength: 20, // 滚动条最小长度
 
-      scrollSpeed: 10, // 垂直方向滚轮速度
+      scrollSpeed: 1, // 垂直方向滚轮速度
       verPercent: 0, // 垂直方向滚动百分比
       horPercent: 0, // 水平方向（轨道）滚动百分比
       namesPercent: 0, // 水平方向（名称）滚动百分比
@@ -128,7 +128,9 @@ export default {
       nextAnimation: null,
       curElement: null, // 记录当前操作的动画DIV
       // 所有计算考虑1px的border getBoundingClientRect 计算包含border
-      dataset: []
+      dataset: [], // 所有动画数据集
+      showDataset: [], // 只用于显示的数据集（防止数据集过多 界面变卡）
+      showCount: 4 // 显示多少条track（相当于track重用）
       // dataset: []
     }
   },
@@ -150,15 +152,15 @@ export default {
   },
   watch: {
     /**
-     * 当前游标时间发生变化，发送timeChange消息
-     */
+       * 当前游标时间发生变化，发送timeChange消息
+       */
     cursorTime (newTime, old) {
       this.$emit('timeChange', this.cursorTime)
       // console.log('timeChange: %o', this.cursorTime)
     },
     /**
-     * 水平滚动条（轨道下面那个）百分比变化时，计算相关div位置
-     */
+       * 水平滚动条（轨道下面那个）百分比变化时，计算相关div位置
+       */
     horPercent (percent, old) {
       if (this.horScrVisible) {
         let tracksParent = this.$refs.tracksParent
@@ -176,19 +178,29 @@ export default {
       }
     },
     /**
-     * 垂直滚动条百分比变化时，计算相关div位置
-     */
+       * 垂直滚动条百分比变化时，计算相关div位置
+       */
     verPercent (percent) {
       if (this.verScrVisible) {
         let namesParent = this.$refs.namesParent
         let tracksParent = this.$refs.tracksParent
-        namesParent.scrollTop = Math.ceil((namesParent.scrollHeight - namesParent.getBoundingClientRect().height) * this.verPercent)
-        tracksParent.scrollTop = Math.ceil((tracksParent.scrollHeight - tracksParent.getBoundingClientRect().height) * this.verPercent)
+        let height = tracksParent.getBoundingClientRect().height
+        this.liHeight = height / this.showCount - 5
+        let p = (this.dataset.length - this.showCount) / this.dataset.length
+        if (this.verPercent > p) {
+          console.log(this.verPercent, p)
+          namesParent.scrollTop = Math.ceil((namesParent.scrollHeight - namesParent.getBoundingClientRect().height) * (this.verPercent - p))
+          tracksParent.scrollTop = Math.ceil((tracksParent.scrollHeight - tracksParent.getBoundingClientRect().height) * (this.verPercent - p))
+        } else {
+          namesParent.scrollTop = 0
+          tracksParent.scrollTop = 0
+        }
+        this.computerShowDataSet()
       }
     },
     /**
-     * 水平滚动条（左侧栏下面那个）百分比变化时，计算相关div位置
-     */
+       * 水平滚动条（左侧栏下面那个）百分比变化时，计算相关div位置
+       */
     namesPercent (percent) {
       if (this.namesScrVisible) {
         let namesParent = this.$refs.namesParent
@@ -202,8 +214,28 @@ export default {
       this.dataset = dataset
     },
     /**
-     * 重新绘制时间轴，时间轴并不会移动，移动的是轨道
-     */
+       * 计算用于显示的track
+       */
+    computerShowDataSet () {
+      this.showDataset = []
+      let tracksParent = this.$refs.tracksParent
+      let height = tracksParent.getBoundingClientRect().height
+      this.liHeight = height / this.showCount - 5
+      let showCount = this.showCount
+      if (this.dataset.length <= showCount) {
+        for (let data of this.dataset) {
+          this.showDataset.push(data)
+        }
+      } else {
+        let index = Math.floor((this.dataset.length - showCount) * this.verPercent)
+        for (let i = 0; i < showCount; i++, index++) {
+          this.showDataset.push(this.dataset[index])
+        }
+      }
+    },
+    /**
+       * 重新绘制时间轴，时间轴并不会移动，移动的是轨道
+       */
     computerRuler () {
       let horPercent = this.horPercent
       let tracksParent = this.$refs.tracksParent
@@ -256,9 +288,9 @@ export default {
       e.stopPropagation()
     },
     /**
-     * 页面大小变换时，重新计算相关元素大小（宽度）
-     * @param e
-     */
+       * 页面大小变换时，重新计算相关元素大小（宽度）
+       * @param e
+       */
     resize (event) {
       let _this = this
       let width = this.$refs.panel.getBoundingClientRect().width // 总宽
@@ -283,12 +315,13 @@ export default {
       this.$nextTick(() => {
         names.style.width = namesParent.scrollWidth + 'px'
         _this.computerScroll()
+        _this.computerShowDataSet()
       })
     },
     /**
-     * 设置结束时间
-     * @return boolean false 时间轴总时间设置不能小于最后一个动画的时间时设置失败
-     */
+       * 设置结束时间
+       * @return boolean false 时间轴总时间设置不能小于最后一个动画的时间时设置失败
+       */
     setEndTime (time) {
       let maxTime = 0
       let maxTrack = null
@@ -321,8 +354,8 @@ export default {
       return true
     },
     /**
-     * 绘制时间轴
-     */
+       * 绘制时间轴
+       */
     drawRuler () {
       let timeline = this.$refs.timeline
       let width = this.delta * this.showTime * this.deltasOfBigDelta
@@ -393,8 +426,8 @@ export default {
       return x * 7.52 + 5.94
     },
     /**
-     *计算左右2个时间轴的位置,并更新时间
-     */
+       *计算左右2个时间轴的位置,并更新时间
+       */
     computerLRTimeAxis () {
       let rightTimeSpan = this.$refs.rightTimeSpan
       let leftTimeSpan = this.$refs.leftTimeSpan
@@ -420,8 +453,8 @@ export default {
       })
     },
     /**
-     *根据游标位置计算时间
-     **/
+       *根据游标位置计算时间
+       **/
     computerTimeByPos () {
       let cursor = this.$refs.cursor
       let tracksParent = this.$refs.tracksParent
@@ -437,8 +470,8 @@ export default {
       }
     },
     /**
-     * 根据时间设置游标位置
-     */
+       * 根据时间设置游标位置
+       */
     setCursorPosByTime () {
       let cursor = this.$refs.cursor
       let cursorCanvas = this.$refs.cursorCanvas
@@ -449,9 +482,9 @@ export default {
       cursor.style.left = left + 'px'
     },
     /**
-     * 计算游标大小
-     *
-     */
+       * 计算游标大小
+       *
+       */
     computerCursorSize () {
       let center = this.$refs.center
       let centerRect = center.getBoundingClientRect()
@@ -463,16 +496,20 @@ export default {
       cursorLine.style.height = centerRect.height - top - cursorCanvasRect.height + 'px'
     },
     /**
-     * 计算是否显示滚动条和滚动条的大小
-     */
+       * 计算是否显示滚动条和滚动条的大小
+       */
     computerScroll () {
       let verticalScrollParent = this.$refs.verticalScrollParent
       let verticalScroll = this.$refs.verticalScroll
       let tracksParent = this.$refs.tracksParent
-      if (tracksParent.getBoundingClientRect().height < tracksParent.scrollHeight) {
+      let height = tracksParent.getBoundingClientRect().height
+      this.liHeight = height / this.showCount - 5
+      let rawHeight = this.liHeight + 5
+      let allHeight = rawHeight * this.dataset.length
+      if (tracksParent.getBoundingClientRect().height < allHeight) {
         this.verScrVisible = true
         this.$nextTick(() => {
-          verticalScroll.style.height = Math.max(this.minScrollLength, parseInt(tracksParent.getBoundingClientRect().height / tracksParent.scrollHeight * verticalScrollParent.getBoundingClientRect().height)) + 'px'
+          verticalScroll.style.height = Math.max(this.minScrollLength, parseInt(tracksParent.getBoundingClientRect().height / allHeight * verticalScrollParent.getBoundingClientRect().height)) + 'px'
         })
       } else {
         this.verScrVisible = false
@@ -510,26 +547,25 @@ export default {
       }
     },
     /**
-     * 鼠标滚动事件
-     * @param e
-     */
+       * 鼠标滚动事件
+       * @param e
+       */
     onPanelWheel (e) {
       if (!this.verScrVisible) return
-      let delta = (e.deltaY > 0 ? 1 : -1) * this.scrollSpeed
       let verticalScrollParent = this.$refs.verticalScrollParent
       let verticalScroll = this.$refs.verticalScroll
-      let top = parseInt(verticalScroll.style.top.split('px'))
-      top += delta
       let verticalScrollParentRect = verticalScrollParent.getBoundingClientRect()
       let verticalScrollRect = verticalScroll.getBoundingClientRect()
-      if (top > 0 && top <= verticalScrollParentRect.height - verticalScrollRect.height) {
-        this.verPercent = top / verticalScrollParentRect.height
-      } else if (top <= 0) {
-        top = 0
-        this.verPercent = 0
-      } else {
+      let percent = this.verPercent + (e.deltaY > 0 ? 1 : -1) * this.scrollSpeed / this.dataset.length
+      let top = percent * (verticalScrollParentRect.height - verticalScrollRect.height)
+      if (percent > 1) {
         top = verticalScrollParentRect.height - verticalScrollRect.height
         this.verPercent = 1
+      } else if (percent <= 0) {
+        this.verPercent = 0
+        top = 0
+      } else {
+        this.verPercent = percent
       }
       verticalScroll.style.top = top + 'px'
     },
@@ -701,8 +737,8 @@ export default {
     },
 
     /**
-     *根据动画id获得动画所属的轨道
-     */
+       *根据动画id获得动画所属的轨道
+       */
     getTrackByAnimationId (id) {
       let dataset = this.dataset
       for (let track of dataset) {
@@ -716,8 +752,8 @@ export default {
       return null
     },
     /**
-     *根据id获得轨道
-     */
+       *根据id获得轨道
+       */
     getTrackById (id) {
       let dataset = this.dataset
       for (let track of dataset) {
@@ -728,8 +764,8 @@ export default {
       return null
     },
     /**
-     *根据id获得上一个相邻动画
-     */
+       *根据id获得上一个相邻动画
+       */
     getLastAnimationById (id) {
       let dataset = this.dataset
       for (let track of dataset) {
@@ -742,8 +778,8 @@ export default {
       }
     },
     /**
-     *根据id获得下一个相邻动画
-     */
+       *根据id获得下一个相邻动画
+       */
     getNextAnimationById (id) {
       let dataset = this.dataset
       for (let track of dataset) {
@@ -756,8 +792,8 @@ export default {
       }
     },
     /**
-     *根据id获得动画
-     */
+       *根据id获得动画
+       */
     getAnimationById (id) {
       let dataset = this.dataset
       for (let track of dataset) {
@@ -770,8 +806,8 @@ export default {
       return null
     },
     /**
-     *根据事件获得animation
-     */
+       *根据事件获得animation
+       */
     getAnimationByEvent (e) {
       let animationId = e.target.getAttribute('data-id')
       if (!animationId) return null
@@ -779,10 +815,10 @@ export default {
       return animation
     },
     /**
-     * @param mouseX 鼠标事件clientX
-     * @param mouseY 鼠标事件clientY
-     * @param options 动画属性
-     */
+       * @param mouseX 鼠标事件clientX
+       * @param mouseY 鼠标事件clientY
+       * @param options 动画属性
+       */
     insertAnimation (mouseX, mouseY, options) { // 加减的2是border的宽
       let panel = this.$refs.panel
       let rect = panel.getBoundingClientRect()
@@ -791,7 +827,7 @@ export default {
       }
       // 根据鼠标位置得到所属轨道
       let parentTrack = null
-      for (let track of this.dataset) {
+      for (let track of this.showDataset) {
         let id = track.id
         let li = document.getElementById(id)
         let liRect = li.getBoundingClientRect()
@@ -890,9 +926,30 @@ export default {
       return newAnimation
     },
     /**
-     *
-     *@param animationOrId animation 或者其id
-     */
+       *在一个track 后插入动画
+       */
+    insertAfterTrack (trackId, options) {
+      let parentTrack = this.getTrackById(trackId)
+      if (!parentTrack) return
+      let startTime = options.startTime
+      let endTime = options.endTime
+      let left = this.delta * startTime * this.deltasOfBigDelta
+      let width = this.delta * (endTime - startTime) * this.deltasOfBigDelta - 2
+      let newAnimation = {id: generateId(),
+        name: options.name,
+        type: options.type,
+        startTime: startTime,
+        endTime: endTime,
+        left: left,
+        width: width,
+        iconShow: false}
+      parentTrack.animation.push(newAnimation)
+      return newAnimation
+    },
+    /**
+       *
+       *@param animationOrId animation 或者其id
+       */
     deleteAnimation (animationOrId) {
       let animation = animationOrId
       if (typeof animationOrId === 'string') {
@@ -909,9 +966,9 @@ export default {
       return true
     },
     /**
-     *根据轨道id删除轨道
-     *@param trackId 轨道id
-     */
+       *根据轨道id删除轨道
+       *@param trackId 轨道id
+       */
     deleteTrack (trackId) {
       let track = this.getTrackById(trackId)
       if (track === null || track === undefined) {
@@ -1109,16 +1166,16 @@ export default {
       document.removeEventListener('mouseup', this.animationMouseUp, false)
     },
     /**
-     * 获得动画数据
-     * @returns {*[]|*}
-     */
+       * 获得动画数据
+       * @returns {*[]|*}
+       */
     getAnimations () {
       return this.dataset
     },
     /**
-     * 当前选中轨道变化
-     * @param e
-     */
+       * 当前选中轨道变化
+       * @param e
+       */
     onTrackSelect (e) {
       let trackId = e.target.getAttribute('data-id')
       if (!trackId) return
@@ -1140,10 +1197,10 @@ export default {
       }
     },
     /**
-     * 鼠标右键点击
-     * 判断点击位置发生消息
-     * @param e
-     */
+       * 鼠标右键点击
+       * 判断点击位置发生消息
+       * @param e
+       */
     onRightDown (e) {
       if (e.button !== 2) return
       // 根据鼠标位置得到所属轨道
@@ -1161,7 +1218,7 @@ export default {
         this.$emit('blankPanelRightDown', e) // 右键空白面板
         return
       }
-      for (let track of this.dataset) {
+      for (let track of this.showDataset) {
         let id = track.id
         for (let animation of track.animation) {
           let animationEl = document.getElementById(animation.id)
@@ -1187,29 +1244,29 @@ export default {
       this.$emit('blankPanelRightDown', e) // 右键空白面板
     },
     /**
-     * 右键名称
-     */
+       * 右键名称
+       */
     notifyNameRightDown (track, e) {
       this.$emit('nameRightDown', track, e)
     },
     /**
-     * 右键动画
-     */
+       * 右键动画
+       */
     notifyAnimationRightDown (animation, track, e) {
       this.$emit('animationRightDown', animation, track, e)
     },
     /**
-     * 右键空白轨道
-     */
+       * 右键空白轨道
+       */
     notifyBlankTrackRightDown (track, e) {
       this.$emit('blankTrackRightDown', track, e)
     },
     /**
-     * 播放
-     * 尝试过使用requestAnimation ,这样就和this.delta，无关，但是时间不准
-     * 使用setInterval 相对误差小一点
-     * 默认 每10ms移动1px,1s移动100px,刚好一个大刻度（因为this.delta=10）所以如果修改了this.delta，这里也要改
-     */
+       * 播放
+       * 尝试过使用requestAnimation ,这样就和this.delta，无关，但是时间不准
+       * 使用setInterval 相对误差小一点
+       * 默认 每10ms移动1px,1s移动100px,刚好一个大刻度（因为this.delta=10）所以如果修改了this.delta，这里也要改
+       */
     play () {
       if (this.playId !== null) return
       this.$emit('play')
@@ -1253,8 +1310,8 @@ export default {
       }, 10)
     },
     /**
-     * 暂停
-     */
+       * 暂停
+       */
     pause () {
       this.$emit('pause')
       if (this.playId) {

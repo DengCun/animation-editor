@@ -1,61 +1,27 @@
+
 /**
  * 根据时间生成唯一ID
  * @returns {string}
  */
+const _lut = []
+let index = 0
+for (let i = 0; i < 256; i++) {
+  _lut[ i ] = (i < 16 ? '0' : '') + (i).toString(16)
+}
+
 function generateId () {
-  return (Math.random() * 10000000).toString(16).substr(0, 4) + '-' + (new Date()).getTime() + '_' + window.performance.now() + '-' + Math.random().toString().substr(2, 5)
+  const d0 = Math.random() * 0xffffffff | 0
+  const d1 = Math.random() * 0xffffffff | 0
+  const d2 = Math.random() * 0xffffffff | 0
+  const d3 = Math.random() * 0xffffffff | 0
+  const uuid = _lut[ d0 & 0xff ] + _lut[ d0 >> 8 & 0xff ] + _lut[ d0 >> 16 & 0xff ] + _lut[ d0 >> 24 & 0xff ] + '-' +
+    _lut[ d1 & 0xff ] + _lut[ d1 >> 8 & 0xff ] + '-' + _lut[ d1 >> 16 & 0x0f | 0x40 ] + _lut[ d1 >> 24 & 0xff ] + '-' +
+    _lut[ d2 & 0x3f | 0x80 ] + _lut[ d2 >> 8 & 0xff ] + '-' + _lut[ d2 >> 16 & 0xff ] + _lut[ d2 >> 24 & 0xff ] +
+    _lut[ d3 & 0xff ] + _lut[ d3 >> 8 & 0xff ] + _lut[ d3 >> 16 & 0xff ] + _lut[ d3 >> 24 & 0xff ]
+
+  // .toUpperCase() here flattens concatenated strings to save heap memory space.
+  return uuid.toUpperCase() + index++
 }
 const StoreMap = new Map()
-function Clock (autoStart) {
-  this.autoStart = (autoStart !== undefined) ? autoStart : true
 
-  this.startTime = 0
-  this.oldTime = 0
-  this.elapsedTime = 0
-
-  this.running = false
-}
-
-Object.assign(Clock.prototype, {
-
-  start: function () {
-    this.startTime = (typeof performance === 'undefined' ? Date : performance).now() // see #10732
-
-    this.oldTime = this.startTime
-    this.elapsedTime = 0
-    this.running = true
-  },
-
-  stop: function () {
-    this.getElapsedTime()
-    this.running = false
-    this.autoStart = false
-  },
-
-  getElapsedTime: function () {
-    this.getDelta()
-    return this.elapsedTime
-  },
-
-  getDelta: function () {
-    var diff = 0
-
-    if (this.autoStart && !this.running) {
-      this.start()
-      return 0
-    }
-
-    if (this.running) {
-      var newTime = (typeof performance === 'undefined' ? Date : performance).now()
-
-      diff = (newTime - this.oldTime) / 1000
-      this.oldTime = newTime
-
-      this.elapsedTime += diff
-    }
-
-    return diff
-  }
-
-})
-export {generateId, StoreMap, Clock}
+export {generateId, StoreMap}
